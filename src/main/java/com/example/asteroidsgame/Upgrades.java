@@ -8,4 +8,6 @@ public class Upgrades extends Character {
         super(new Polygon(8, 0, 8, 8, 0, 8, 0, 0), x, y);
         this.getCharacter().setFill(Color.RED);
     }
+
+    // For test branch
 }
