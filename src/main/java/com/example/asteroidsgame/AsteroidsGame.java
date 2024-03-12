@@ -49,7 +49,7 @@ public class AsteroidsGame extends Application {
         mainImage.setFitWidth(WIDTH);
         startPane.getChildren().add(mainImage);
 
-        // Game window pane
+        // New pane
         Pane pane = new Pane();
 
         // New text for points and death screen
@@ -99,12 +99,6 @@ public class AsteroidsGame extends Application {
         fadeLostTransition.setOnFinished(event -> {
             // Code to display text after transition
             pane.getChildren().add(youLostText);
-            Button testButton = createButton("Quit");
-            // Position the button in the center of the start pane
-            testButton.setLayoutX(WIDTH / 2 - (BUTTON_WIDTH / 2));
-            testButton.setLayoutY((HEIGHT / 2) + 30);
-            pane.getChildren().add(testButton);
-            testButton.setOnAction(click -> stage.close());
         });
 
         fadeWonTransition.setOnFinished(event -> {
@@ -129,7 +123,7 @@ public class AsteroidsGame extends Application {
             Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
             asteroids.add(asteroid);
         }
-        // Add 1 upgrade at the start (up to x amount)
+        // Add 1 upgrade at the start
         for (int i = 0; i < 1; i++) {
             Upgrades upgrade = new Upgrades(WIDTH / 3, HEIGHT / 3);
             upgrades.add(upgrade);
