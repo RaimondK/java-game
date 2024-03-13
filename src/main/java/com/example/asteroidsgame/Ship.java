@@ -12,7 +12,7 @@ public class Ship extends Character {
     }
 
     public void accelerate() {
-        double speed = 0.5;
+        double speed = 1;
         double angleInRadians = Math.toRadians(this.getCharacter().getRotate());
         double changeX = speed * Math.cos(angleInRadians);
         double changeY = speed * Math.sin(angleInRadians);
@@ -20,7 +20,16 @@ public class Ship extends Character {
         this.setMovement(new Point2D(changeX, changeY));
     }
 
-    public void decelerate() {
+    public void stopMoving() {
         this.setMovement(new Point2D(0, 0));
+    }
+
+    public void moveBackwards()  {
+        double speed = -1;
+        double angleInRadians = Math.toRadians(this.getCharacter().getRotate());
+        double changeX = speed * Math.cos(angleInRadians);
+        double changeY = speed * Math.sin(angleInRadians);
+
+        this.setMovement(new Point2D(changeX, changeY));
     }
 }

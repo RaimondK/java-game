@@ -195,10 +195,12 @@ public class AsteroidsGame extends Application {
                 // Move forward
                 if (pressedKeys.getOrDefault(KeyCode.W, false)) {
                     ship.accelerate();
+                } else {
+                    ship.stopMoving();
                 }
                 // Move backwards
                 if (pressedKeys.getOrDefault(KeyCode.S, false)) {
-                    ship.decelerate();
+                    ship.moveBackwards();
                 }
                 scene.setOnMouseMoved(event -> {
                     if (!gameStopped) {
