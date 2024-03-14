@@ -44,7 +44,7 @@ public class AsteroidsGame extends Application {
         // Start pane
         Pane startPane = new Pane();
         startPane.setPrefSize(WIDTH, HEIGHT);
-        ImageView mainImage = new ImageView("File:src/main/resources/mainImage.png");
+        ImageView mainImage = new ImageView("File:src/main/resources/mainImage.jpg");
         mainImage.setFitHeight(HEIGHT);
         mainImage.setFitWidth(WIDTH);
         startPane.getChildren().add(mainImage);
@@ -306,6 +306,7 @@ public class AsteroidsGame extends Application {
                     if (ship.collide(smallAsteroid)) {
                         stop();                // Stop and
                         fadeLostTransition.play(); // transition to black
+
                     }
                 });
                 // Collision check between projectiles and asteroids
