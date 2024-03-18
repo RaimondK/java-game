@@ -202,19 +202,6 @@ public class AsteroidsGame extends Application {
                 if (pressedKeys.getOrDefault(KeyCode.S, false)) {
                     ship.moveBackwards();
                 }
-                scene.setOnMouseMoved(event -> {
-                    if (!gameStopped) {
-                        // Calculate the angle between the ship and the mouse cursor
-                        double mouseX = event.getX();
-                        double mouseY = event.getY();
-                        double shipX = ship.getCharacter().getTranslateX() + (ship.getCharacter().getLayoutBounds().getWidth() / 2);
-                        double shipY = ship.getCharacter().getTranslateY() + (ship.getCharacter().getLayoutBounds().getHeight() / 2);
-                        double angle = Math.toDegrees(Math.atan2(mouseY - shipY, mouseX - shipX));
-
-                        // Rotate the ship
-                        ship.getCharacter().setRotate(angle);
-                    }
-                });
                 // Stop the game when ESC is pressed
                 if (pressedKeys.getOrDefault(KeyCode.ESCAPE, false)) {
                     gameStopped = true;
@@ -245,6 +232,20 @@ public class AsteroidsGame extends Application {
                         stage.setScene(startScene);
                     });
                 }
+                scene.setOnMouseMoved(event -> {
+                    if (!gameStopped) {
+                        // Calculate the angle between the ship and the mouse cursor
+                        double mouseX = event.getX();
+                        double mouseY = event.getY();
+                        double shipX = ship.getCharacter().getTranslateX() + (ship.getCharacter().getLayoutBounds().getWidth() / 2);
+                        double shipY = ship.getCharacter().getTranslateY() + (ship.getCharacter().getLayoutBounds().getHeight() / 2);
+                        double angle = Math.toDegrees(Math.atan2(mouseY - shipY, mouseX - shipX));
+
+                        // Rotate the ship
+                        ship.getCharacter().setRotate(angle);
+                    }
+                });
+
                 // Shoot with Mouse1
                 if (mousePressed && !gameStopped && projectiles.size() < projectileCount) {
                     // Creating a new projectile
@@ -291,6 +292,7 @@ public class AsteroidsGame extends Application {
                 // Ship collision check
                 asteroids.forEach(asteroid -> {
                     if (ship.collide(asteroid)) {
+                        gameStopped = true;
                         stop();                // Stop and
                         fadeLostTransition.play(); // transition to black
                     }
@@ -298,12 +300,15 @@ public class AsteroidsGame extends Application {
                 // Ship collision check with splitAsteroids
                 splitAsteroids.forEach(splitAsteroid -> {
                     if (ship.collide(splitAsteroid)) {
+                        gameStopped = true;
                         stop();                // Stop and
                         fadeLostTransition.play(); // transition to black
                     }
                 });
+                // Ship collision check with smallAsteroids
                 smallAsteroids.forEach(smallAsteroid -> {
                     if (ship.collide(smallAsteroid)) {
+                        gameStopped = true;
                         stop();                // Stop and
                         fadeLostTransition.play(); // transition to black
                     }
@@ -411,8 +416,14 @@ public class AsteroidsGame extends Application {
                     }
                 }
                 // After x amount of points, stop and transition color
-                if (points.get() >= 150000) {
+                if (points.get() >= 500) {
                     gameStopped = true;
+                    smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
+                    smallAsteroids.clear();
+                    splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
+                    splitAsteroids.clear();
+                    pane.getChildren().remove(ship.getCharacter());
+                    upgrades.forEach(upgrade -> pane.getChildren().remove(upgrade.getCharacter()));
                     stop();                   // Stop and
                     fadeWonTransition.play(); // transition to green
                 }

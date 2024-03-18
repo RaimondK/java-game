@@ -12,7 +12,7 @@ public class Ship extends Character {
     }
 
     public void accelerate() {
-        double speed = 1;
+        double speed = 3;
         double angleInRadians = Math.toRadians(this.getCharacter().getRotate());
         double changeX = speed * Math.cos(angleInRadians);
         double changeY = speed * Math.sin(angleInRadians);
