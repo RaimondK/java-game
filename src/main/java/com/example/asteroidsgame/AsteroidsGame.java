@@ -254,7 +254,6 @@ public class AsteroidsGame extends Application {
 
                     projectile.accelerate();
                     projectile.setMovement(projectile.getMovement().normalize().multiply(3));
-
                     pane.getChildren().add(projectile.getCharacter());
                 }
 
@@ -263,27 +262,21 @@ public class AsteroidsGame extends Application {
                 splitAsteroids.forEach(Asteroid::move);
                 smallAsteroids.forEach(Asteroid::move);
                 projectiles.forEach(Projectile::move);
-                // Ship collision check
-                asteroids.forEach(asteroid -> {
-                    if (ship.collide(asteroid)) {
-                        stop();                // Stop and
-                        fadeLostTransition.play(); // transition to black
-                    }
-                });
+
                 // Ship collision check with upgrades
                 upgrades.forEach(upgrade -> {
                     if (ship.collide(upgrade)) {
                         upgrade.setAlive(false);
                         projectileCount++;
-                        // Testing popup for upgrades
+                        // Popup for upgrades
                         Label popupText = new Label("+1 projectiles! (" + projectileCount + " in total)");
                         popupText.setTextFill(Color.WHITESMOKE);
                         // Create popup
                         Popup popup = new Popup();
                         popup.getContent().add(popupText); // Set text
-                        popup.setAutoFix(true); // Enable auto-fix
-                        popup.setWidth(50); // Set width
-                        popup.setHeight(100); // Set height
+                        popup.setAutoFix(true);
+                        popup.setWidth(50);
+                        popup.setHeight(100);
 
                         // Show popup
                         popup.show(stage);
@@ -293,6 +286,13 @@ public class AsteroidsGame extends Application {
                         KeyFrame keyFrame = new KeyFrame(duration, event -> popup.hide());
                         Timeline popupTime = new Timeline(keyFrame);
                         popupTime.play();
+                    }
+                });
+                // Ship collision check
+                asteroids.forEach(asteroid -> {
+                    if (ship.collide(asteroid)) {
+                        stop();                // Stop and
+                        fadeLostTransition.play(); // transition to black
                     }
                 });
                 // Ship collision check with splitAsteroids
@@ -306,7 +306,6 @@ public class AsteroidsGame extends Application {
                     if (ship.collide(smallAsteroid)) {
                         stop();                // Stop and
                         fadeLostTransition.play(); // transition to black
-
                     }
                 });
                 // Collision check between projectiles and asteroids
@@ -318,7 +317,7 @@ public class AsteroidsGame extends Application {
                             text.setText("Points: " + points.addAndGet(500));
                             // TESTING Timeline
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
-                                // Add 4 splitAsteroids to the place of asteroid
+                                // Add 2 splitAsteroids to the place of asteroid
                                 for (int i = 0; i < 2; i++) {
                                     Asteroid splitAsteroid = new Asteroid(30, (int) asteroid.getCharacter().getTranslateX(), (int) asteroid.getCharacter().getTranslateY());
                                     splitAsteroids.add(splitAsteroid);
@@ -336,7 +335,7 @@ public class AsteroidsGame extends Application {
                             text.setText("Points: " + points.addAndGet(250));
                             // TESTING Timeline
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
-                                // Add 6 smallAsteroids to the place of splitAsteroids
+                                // Add 12 smallAsteroids to the place of splitAsteroids
                                 for (int i = 0; i < 12; i++) {
                                     Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY());
                                     smallAsteroids.add(smallAsteroid);
