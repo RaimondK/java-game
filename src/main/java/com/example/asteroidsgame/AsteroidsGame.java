@@ -120,7 +120,7 @@ public class AsteroidsGame extends Application {
         for (int i = 0; i < 1; i++) {
             Random rnd = new Random();
             // Position where it's created
-            Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT), ship);
             asteroids.add(asteroid);
         }
         // Add 1 upgrade at the start
@@ -324,7 +324,7 @@ public class AsteroidsGame extends Application {
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
                                 // Add 2 splitAsteroids to the place of asteroid
                                 for (int i = 0; i < 2; i++) {
-                                    Asteroid splitAsteroid = new Asteroid(30, (int) asteroid.getCharacter().getTranslateX(), (int) asteroid.getCharacter().getTranslateY());
+                                    Asteroid splitAsteroid = new Asteroid(30, (int) asteroid.getCharacter().getTranslateX(), (int) asteroid.getCharacter().getTranslateY(), ship);
                                     splitAsteroids.add(splitAsteroid);
                                     pane.getChildren().add(splitAsteroid.getCharacter());
                                 }
@@ -342,7 +342,7 @@ public class AsteroidsGame extends Application {
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
                                 // Add 12 smallAsteroids to the place of splitAsteroids
                                 for (int i = 0; i < 12; i++) {
-                                    Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY());
+                                    Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY(), ship);
                                     smallAsteroids.add(smallAsteroid);
                                     pane.getChildren().add(smallAsteroid.getCharacter());
                                 }
@@ -409,14 +409,14 @@ public class AsteroidsGame extends Application {
                 }
                 // Add a new asteroid to the game
                 if (Math.random() < 0.0005) {
-                    Asteroid asteroid = new Asteroid(WIDTH, HEIGHT);
+                    Asteroid asteroid = new Asteroid(WIDTH, HEIGHT, ship);
                     if (!asteroid.collide(ship)) {
                         asteroids.add(asteroid);
                         pane.getChildren().add(asteroid.getCharacter());
                     }
                 }
                 // After x amount of points, stop and transition color
-                if (points.get() >= 500) {
+                if (points.get() >= 2500) {
                     gameStopped = true;
                     smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
                     smallAsteroids.clear();
@@ -424,6 +424,10 @@ public class AsteroidsGame extends Application {
                     splitAsteroids.clear();
                     pane.getChildren().remove(ship.getCharacter());
                     upgrades.forEach(upgrade -> pane.getChildren().remove(upgrade.getCharacter()));
+                    asteroids.forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
+                    splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
+                    smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
+                    projectiles.forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
                     stop();                   // Stop and
                     fadeWonTransition.play(); // transition to green
                 }
