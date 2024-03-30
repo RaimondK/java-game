@@ -1,4 +1,8 @@
-package com.example.asteroidsgame;
+package com.example.asteroidsgame.Enemies;
+
+import com.example.asteroidsgame.Character;
+import com.example.asteroidsgame.PolygonFactory;
+import com.example.asteroidsgame.Ship;
 
 import java.util.Random;
 
@@ -6,6 +10,21 @@ public class Asteroid extends Character {
 
     private double rotationalMovement;
     private Ship ship;
+
+    public Asteroid(double sizeOfAsteroid, int x, int y) {
+        super(new PolygonFactory().createPolygon(sizeOfAsteroid), x, y);
+
+        Random rnd = new Random();
+
+        super.getCharacter().setRotate(rnd.nextInt(360));
+
+        int accelerationAmount = 1 + rnd.nextInt(10);
+        for (int i = 0; i < accelerationAmount; i++) {
+            accelerate();
+        }
+
+        this.rotationalMovement = 0.5 - rnd.nextDouble();
+    }
 
     public Asteroid(int x, int y, Ship playerShip) {
         super(new PolygonFactory().createPolygon(), x, y);
@@ -42,7 +61,7 @@ public class Asteroid extends Character {
     @Override
     public void move() {
         super.move();
-        followPlayer(ship.getCharacter().getTranslateX(), ship.getCharacter().getTranslateY(), 1);
+        followPlayer(ship.getCharacter().getTranslateX(), ship.getCharacter().getTranslateY(), 0.3);
         super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
     }
 

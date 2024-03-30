@@ -6,4 +6,6 @@ module com.example.asteroidsgame {
 
     opens com.example.asteroidsgame to javafx.fxml;
     exports com.example.asteroidsgame;
+    exports com.example.asteroidsgame.Enemies;
+    opens com.example.asteroidsgame.Enemies to javafx.fxml;
 }
