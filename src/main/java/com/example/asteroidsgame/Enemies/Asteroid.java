@@ -3,6 +3,7 @@ package com.example.asteroidsgame.Enemies;
 import com.example.asteroidsgame.Character;
 import com.example.asteroidsgame.PolygonFactory;
 import com.example.asteroidsgame.Ship;
+import javafx.scene.paint.Color;
 
 import java.util.Random;
 
@@ -13,6 +14,7 @@ public class Asteroid extends Character {
 
     public Asteroid(double sizeOfAsteroid, int x, int y) {
         super(new PolygonFactory().createPolygon(sizeOfAsteroid), x, y);
+        this.getCharacter().setFill(Color.web("#002EFF", 1.0));
 
         Random rnd = new Random();
 
@@ -28,6 +30,7 @@ public class Asteroid extends Character {
 
     public Asteroid(int x, int y, Ship playerShip) {
         super(new PolygonFactory().createPolygon(), x, y);
+        this.getCharacter().setFill(Color.web("#002EFF", 1.0));
         this.ship = playerShip;
 
         Random rnd = new Random();
@@ -44,6 +47,7 @@ public class Asteroid extends Character {
 
     public Asteroid(double sizeOfAsteroid, int x, int y, Ship playerShip) {
         super(new PolygonFactory().createPolygon(sizeOfAsteroid), x, y);
+        this.getCharacter().setFill(Color.web("#002EFF", 1.0));
         this.ship = playerShip;
 
         Random rnd = new Random();

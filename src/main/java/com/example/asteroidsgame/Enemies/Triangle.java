@@ -1,10 +1,36 @@
 package com.example.asteroidsgame.Enemies;
 
 import com.example.asteroidsgame.Character;
+import com.example.asteroidsgame.PolygonFactory;
+import com.example.asteroidsgame.Ship;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
+import java.util.Random;
+
 public class Triangle extends Character {
-    public Triangle(Polygon polygon, int x, int y) {
-        super(polygon, x, y);
+
+    private double rotationalMovement;
+
+    public Triangle(int x, int y) {
+        super(new Polygon(-10, -10, 20, 0, -10, 10), x, y);
+        this.getCharacter().setFill(Color.web("#A600FF", 1.0));
+
+        Random rnd = new Random();
+
+        super.getCharacter().setRotate(rnd.nextInt(360));
+
+        int accelerationAmount = 1 + rnd.nextInt(10);
+        for (int i = 0; i < accelerationAmount; i++) {
+            accelerate();
+        }
+
+        this.rotationalMovement = 0.5 - rnd.nextDouble();
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
     }
 }

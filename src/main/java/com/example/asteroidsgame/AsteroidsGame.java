@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.example.asteroidsgame.Enemies.Asteroid;
+import com.example.asteroidsgame.Enemies.Circle;
+import com.example.asteroidsgame.Enemies.Square;
+import com.example.asteroidsgame.Enemies.Triangle;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -61,7 +64,7 @@ public class AsteroidsGame extends Application {
         youLostText.setFont(Font.font(40));
         // Won text settings
         Text youWonText = new Text(200, 240, "YOU WON! =)");
-        youWonText.setFill(Color.YELLOW);
+        youWonText.setFill(Color.BLACK);
         youWonText.setFont(Font.font(40));
 
 
@@ -73,7 +76,7 @@ public class AsteroidsGame extends Application {
 
         // Background color
         Rectangle backgroundRect = new Rectangle(0, 0, WIDTH, HEIGHT);
-        backgroundRect.setFill(Color.DARKSLATEBLUE);
+        backgroundRect.setFill(Color.BLACK);
 
         // Create a black overlay rectangle
         Rectangle lostBackground = new Rectangle(0, 0, WIDTH, HEIGHT);
@@ -82,7 +85,7 @@ public class AsteroidsGame extends Application {
 
         // Create a green overlay rectangle
         Rectangle wonBackground = new Rectangle(0, 0, WIDTH, HEIGHT);
-        wonBackground.setFill(Color.GREEN);
+        wonBackground.setFill(Color.WHITESMOKE);
         wonBackground.setOpacity(0); // Initially transparent
 
         pane.getChildren().addAll(backgroundRect, lostBackground, wonBackground);
@@ -99,6 +102,7 @@ public class AsteroidsGame extends Application {
 
         fadeLostTransition.setOnFinished(event -> {
             // Code to display text after transition
+
             pane.getChildren().add(youLostText);
         });
 
@@ -112,6 +116,9 @@ public class AsteroidsGame extends Application {
         // Create the ship and put it in the middle of the screen
         Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
         // Asteroid, upgrades and projectile lists
+        List<Square> squareEnemy = new ArrayList<>();
+        List<Circle> circleEnemy = new ArrayList<>();
+        List<Triangle> triangleEnemy = new ArrayList<>();
         List<Asteroid> asteroids = new ArrayList<>();
         List<Asteroid> splitAsteroids = new ArrayList<>();
         List<Asteroid> smallAsteroids = new ArrayList<>();
@@ -123,12 +130,23 @@ public class AsteroidsGame extends Application {
             // Position where it's created
             Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT), ship);
             asteroids.add(asteroid);
+            Triangle triangle = new Triangle(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            triangleEnemy.add(triangle);
+            Square square = new Square(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            squareEnemy.add(square);
+            Circle circle = new Circle(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            circleEnemy.add(circle);
         }
         // Add 1 upgrade at the start
         for (int i = 0; i < 1; i++) {
             Upgrades upgrade = new Upgrades(WIDTH / 3, HEIGHT / 3);
             upgrades.add(upgrade);
         }
+
+        triangleEnemy.forEach(triangleEnemies -> pane.getChildren().add(triangleEnemies.getCharacter()));
+        squareEnemy.forEach(squareEnemies -> pane.getChildren().add(squareEnemies.getCharacter()));
+        circleEnemy.forEach(circleEnemies -> pane.getChildren().add(circleEnemies.getCharacter()));
+
 
         // Add ship to the pane
         pane.getChildren().add(ship.getCharacter());
@@ -264,6 +282,9 @@ public class AsteroidsGame extends Application {
                 splitAsteroids.forEach(Asteroid::move);
                 smallAsteroids.forEach(Asteroid::move);
                 projectiles.forEach(Projectile::move);
+                triangleEnemy.forEach(Triangle::move);
+                squareEnemy.forEach(Square::move);
+                circleEnemy.forEach(Circle::move);
 
                 // Ship collision check with upgrades
                 upgrades.forEach(upgrade -> {
@@ -294,10 +315,12 @@ public class AsteroidsGame extends Application {
                 asteroids.forEach(asteroid -> {
                     if (ship.collide(asteroid)) {
                         gameStopped = true;
-                        stop();                // Stop and
-                        fadeLostTransition.play(); // transition to black
+                            clearObjects(asteroids, triangleEnemy, splitAsteroids, smallAsteroids, projectiles, upgrades, pane, ship);
+                            stop();                // Stop and
+                            fadeLostTransition.play(); // transition to black
                     }
                 });
+
                 // Ship collision check with splitAsteroids
                 splitAsteroids.forEach(splitAsteroid -> {
                     if (ship.collide(splitAsteroid)) {
@@ -330,6 +353,7 @@ public class AsteroidsGame extends Application {
                                     pane.getChildren().add(splitAsteroid.getCharacter());
                                 }
                             }));
+                            timeline.setDelay(Duration.millis(100));
                             timeline.play();
                         }
                     });
@@ -341,6 +365,7 @@ public class AsteroidsGame extends Application {
                             text.setText("Points: " + points.addAndGet(250));
                             // TESTING Timeline
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+
                                 // Add 12 smallAsteroids to the place of splitAsteroids
                                 for (int i = 0; i < 12; i++) {
                                     Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY(), ship);
@@ -348,6 +373,7 @@ public class AsteroidsGame extends Application {
                                     pane.getChildren().add(smallAsteroid.getCharacter());
                                 }
                             }));
+                            timeline.setDelay(Duration.millis(200));
                             timeline.play();
                         }
                     });
@@ -417,20 +443,11 @@ public class AsteroidsGame extends Application {
                     }
                 }
                 // After x amount of points, stop and transition color
-                if (points.get() >= 2500) {
+                if (points.get() >= 500) {
                     gameStopped = true;
-                    smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
-                    smallAsteroids.clear();
-                    splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
-                    splitAsteroids.clear();
-                    pane.getChildren().remove(ship.getCharacter());
-                    upgrades.forEach(upgrade -> pane.getChildren().remove(upgrade.getCharacter()));
-                    asteroids.forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
-                    splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
-                    smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
-                    projectiles.forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
-                    stop();                   // Stop and
-                    fadeWonTransition.play(); // transition to green
+                    stop();
+                    clearObjects(asteroids, triangleEnemy, splitAsteroids, smallAsteroids, projectiles, upgrades, pane, ship);
+                    fadeWonTransition.play();
                 }
             }
         }.start();
@@ -444,6 +461,18 @@ public class AsteroidsGame extends Application {
         Button button = new Button(buttonName);
         button.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         return button;
+    }
+
+    private void clearObjects(List<Asteroid> asteroids, List<Triangle> triangleEnemy, List<Asteroid> splitAsteroids, List<Asteroid> smallAsteroids, List<Projectile> projectiles, List<Upgrades> upgrades, Pane pane, Ship ship) {
+        asteroids.forEach(asteroid -> pane.getChildren().remove(asteroid.getCharacter()));
+        smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
+        splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
+        pane.getChildren().remove(ship.getCharacter());
+        upgrades.forEach(upgrade -> pane.getChildren().remove(upgrade.getCharacter()));
+        splitAsteroids.forEach(splitAsteroid -> pane.getChildren().remove(splitAsteroid.getCharacter()));
+        smallAsteroids.forEach(smallAsteroid -> pane.getChildren().remove(smallAsteroid.getCharacter()));
+        projectiles.forEach(projectile -> pane.getChildren().remove(projectile.getCharacter()));
+        triangleEnemy.forEach(triangle -> pane.getChildren().remove(triangle.getCharacter()));
     }
 
     public static void main(String[] args) {
