@@ -10,27 +10,56 @@ import java.util.Random;
 
 public class Triangle extends Character {
 
-    private double rotationalMovement;
+    private Ship ship;
 
-    public Triangle(int x, int y) {
+    public Triangle(int x, int y, Ship playerShip) {
         super(new Polygon(-10, -10, 20, 0, -10, 10), x, y);
-        this.getCharacter().setFill(Color.web("#A600FF", 1.0));
+        this.getCharacter().setFill(Color.web("#ffffff", 1.0));
+        this.ship = playerShip;
 
         Random rnd = new Random();
-
-        super.getCharacter().setRotate(rnd.nextInt(360));
 
         int accelerationAmount = 1 + rnd.nextInt(10);
         for (int i = 0; i < accelerationAmount; i++) {
             accelerate();
         }
-
-        this.rotationalMovement = 0.5 - rnd.nextDouble();
     }
 
     @Override
     public void move() {
         super.move();
-        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
     }
+
+    public void followPlayer() {
+        super.move();
+        followPlayer(ship.getCharacter().getTranslateX(), ship.getCharacter().getTranslateY(), 1);
+    }
+
+    public void followPlayer(double playerX, double playerY, double speed) {
+        // Calculate the direction vector from the asteroid to the player
+        double dx = playerX - this.getCharacter().getTranslateX();
+        double dy = playerY - this.getCharacter().getTranslateY();
+
+        // Calculate the magnitude of the direction vector
+        double magnitude = Math.sqrt(dx * dx + dy * dy);
+
+        // Normalize the direction vector to get a unit vector
+        dx /= magnitude;
+        dy /= magnitude;
+
+        // Update the position of the asteroid based on the direction vector and speed
+        double newX = this.getCharacter().getTranslateX() + dx * speed;
+        double newY = this.getCharacter().getTranslateY() + dy * speed;
+        this.getCharacter().setTranslateX(newX);
+        this.getCharacter().setTranslateY(newY);
+
+        // Update the triangle to point towards the ship
+        double mouseX = ship.getCharacter().getTranslateX();
+        double mouseY = ship.getCharacter().getTranslateY();
+        double shipX = super.getCharacter().getTranslateX() + (super.getCharacter().getLayoutBounds().getWidth() / 2);
+        double shipY = super.getCharacter().getTranslateY() + (super.getCharacter().getLayoutBounds().getHeight() / 2);
+        double angle = Math.toDegrees(Math.atan2(mouseY - shipY, mouseX - shipX));
+        super.getCharacter().setRotate(angle);
+    }
+
 }

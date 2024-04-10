@@ -128,9 +128,9 @@ public class AsteroidsGame extends Application {
         for (int i = 0; i < 1; i++) {
             Random rnd = new Random();
             // Position where it's created
-            Asteroid asteroid = new Asteroid(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT), ship);
+            Asteroid asteroid = new Asteroid(65, rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
             asteroids.add(asteroid);
-            Triangle triangle = new Triangle(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
+            Triangle triangle = new Triangle(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT), ship);
             triangleEnemy.add(triangle);
             Square square = new Square(rnd.nextInt(WIDTH / 3), rnd.nextInt(HEIGHT));
             squareEnemy.add(square);
@@ -282,7 +282,7 @@ public class AsteroidsGame extends Application {
                 splitAsteroids.forEach(Asteroid::move);
                 smallAsteroids.forEach(Asteroid::move);
                 projectiles.forEach(Projectile::move);
-                triangleEnemy.forEach(Triangle::move);
+                triangleEnemy.forEach(Triangle::followPlayer);
                 squareEnemy.forEach(Square::move);
                 circleEnemy.forEach(Circle::move);
 
@@ -348,7 +348,7 @@ public class AsteroidsGame extends Application {
                             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100), event -> {
                                 // Add 2 splitAsteroids to the place of asteroid
                                 for (int i = 0; i < 2; i++) {
-                                    Asteroid splitAsteroid = new Asteroid(30, (int) asteroid.getCharacter().getTranslateX(), (int) asteroid.getCharacter().getTranslateY(), ship);
+                                    Asteroid splitAsteroid = new Asteroid(30, (int) asteroid.getCharacter().getTranslateX(), (int) asteroid.getCharacter().getTranslateY());
                                     splitAsteroids.add(splitAsteroid);
                                     pane.getChildren().add(splitAsteroid.getCharacter());
                                 }
@@ -368,7 +368,7 @@ public class AsteroidsGame extends Application {
 
                                 // Add 12 smallAsteroids to the place of splitAsteroids
                                 for (int i = 0; i < 12; i++) {
-                                    Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY(), ship);
+                                    Asteroid smallAsteroid = new Asteroid(5, (int) splitAsteroid.getCharacter().getTranslateX(), (int) splitAsteroid.getCharacter().getTranslateY());
                                     smallAsteroids.add(smallAsteroid);
                                     pane.getChildren().add(smallAsteroid.getCharacter());
                                 }
@@ -436,14 +436,14 @@ public class AsteroidsGame extends Application {
                 }
                 // Add a new asteroid to the game
                 if (Math.random() < 0.0005) {
-                    Asteroid asteroid = new Asteroid(WIDTH, HEIGHT, ship);
+                    Asteroid asteroid = new Asteroid(65, WIDTH, HEIGHT);
                     if (!asteroid.collide(ship)) {
                         asteroids.add(asteroid);
                         pane.getChildren().add(asteroid.getCharacter());
                     }
                 }
                 // After x amount of points, stop and transition color
-                if (points.get() >= 500) {
+                if (points.get() >= 22500) {
                     gameStopped = true;
                     stop();
                     clearObjects(asteroids, triangleEnemy, splitAsteroids, smallAsteroids, projectiles, upgrades, pane, ship);

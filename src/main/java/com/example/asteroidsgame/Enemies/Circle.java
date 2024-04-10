@@ -12,7 +12,7 @@ public class Circle extends Character {
 
     public Circle(int x, int y) {
         super(new Polygon(-10, -10, 20, 0, -10, 10), x, y);
-        this.getCharacter().setFill(Color.web("#ffffff", 1.0));
+        this.getCharacter().setFill(Color.web("#A600FF", 1.0));
 
         Random rnd = new Random();
 

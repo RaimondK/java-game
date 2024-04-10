@@ -65,6 +65,11 @@ public class Asteroid extends Character {
     @Override
     public void move() {
         super.move();
+        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
+    }
+
+    public void followPlayer() {
+        super.move();
         followPlayer(ship.getCharacter().getTranslateX(), ship.getCharacter().getTranslateY(), 0.3);
         super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
     }
